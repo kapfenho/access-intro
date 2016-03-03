@@ -26,5 +26,24 @@ This document covers topics from Access Managament Access Manager only.
 \section{Access Manager}
 
 
-You can think of Access Manager as a general gate infront of all your applications that each request has to pass. The \emph{ticket} or the \emph{single sign on session} is stored centralized and at the client side (cookies). The individual implementations of the user login and logout are removed from applications during integration. Only authenticated requests can reach the application from now on. While an authorization policy enforcement is available and recommended, other products of the suite are likely necessary to for a covering different authorization requirements.
+You can think of Access Manager as a general gate infront of all your applications that each request has to pass. The \emph{ticket} or the \emph{single sign on session} is stored centralized and at the client side (cookies). The individual implementations of the user login and logout are removed from applications during integration. Only authenticated requests can reach the application from now on. While an authorization policy enforcement is available and recommended, other products of the suite may be necessary to cover different authorization requirements.
 
+
+\subsection{Use Cases}
+
+Let's make one assumption - to simplify our examples: the applications we are dealing with are web applications, to be more exact: the user interface is rendered in a standard conform Internet browser.
+
+There are ways to integrate legacy applications, however more analysis work has to be done beforehand. 
+
+Focusing on web applications, as it happens some design desicions are already taken, with unpretentious protocols: data transport and technical interface is HTTP(S).
+
+\emph{User opens resource (URI) to start a system transaction}
+
+So our start point is a user request for a resource, let's say a the first webpage of a customer maintenance workflow. The webpage is the resource the user requests.
+
+
+
+
+
+
+% vi:set lbr breakindent:
