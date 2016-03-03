@@ -4,20 +4,56 @@
 
 \section{Access Management Suite}
 
-Oracle Access Manager was aquiered by Oracle in
-XXX
-The Access Manager itself is the heart of Suite, while other products or new feature sets have been integrated. 
+Around 2010 Oracle aquired a docen of software vendors and technology companies in the securiry and identity and access management market. Among them were some niche players and also leaders, like Sun Microsystems with several pctive roducts and a vast user base.
 
+Developing a portfolio of twenty specialized systems to two or three tightly integrated solutions definitely the overal plan, but not every step is set straight on that path, looking at the footsteps we see sometimes.
+
+Next to the Identity Management Suite the Access Management Suite is the second major product group, where the collected technologies deal with run-time evaluation of user or system access.
+
+The Access Manager itself is the heart of Suite, where other products or new feature sets have been integrated or merged into.
 
 \begin{itemize}
-    \item Access Manager: Access Control, Single-Sign-On, Policies, Agent-Management
-    \item Identity Federation: cross-domain single sign-on support using open federation protocol standards such as SAML and OpenID
-    \item Security Token Service: token validation and generation to facilitate access to services across security domains and beyond organizational boundaries. Essentially the service acts as a trust-broker that receives and validates client requests and generates appropriate tokens for a requested resource
-    \item Mobile and Social: Mobile: integrate iOS and Android mobile devices, policy enforcement on those devices, single-sign-on for mobile apps and browser based access, SDK on mobile devices. Social: integrate authentication, policies for social services.
-    \item Adaptive Authentication Service: Real-time and batch risk analytics to prevent fraud and misuse, risk based authentication, additional authentication methods, like One-Time-Passwords (OTP)
-    \item OAuth Services: OAuth 2.0 authentication client and server. Manage access control over domain borders.
-    \item Identity Context: Enable dynamic adation of permissions based on user related data, like location, last transactions, third party informations, other assigned permissions, etc.
+    \item Access Manager
+    \item Identity Federation
+    \item Security Token Service
+    \item Mobile and Social
+    \item Adaptive Authentication Service
+    \item OAuth Services
+    \item Identity Context
 \end{itemize}
+
+\subsubsection{Access Management Access Manager}
+
+As the central part of the suite, Access Manager delivers the adminstrative user interface. All authentication mechanisms are defined here and components and processes can be activated or cut-off in the admin UI. Business applications can be registered and and external data sources with user data are connected.
+Distributed components, the policy enforcement points, are located closer to the protected business applications and request authentication and authorization information from the central access server over encrypted channels.
+
+
+\subsubsection{Identity Federation}
+
+While Access Manager takes care of a single domain (or multiple but independent domains), Identity Federation helps to connect domains (e.g. two organizations with integrated business activities). In each activity the roles and responsibilities are well defined. Indentity Federations supports SAML and OpenID.
+
+\subsubsection{Security Token Service}
+
+Token validation and generation to facilitate access to services across security domains and beyond organizational boundaries. Essentially the service acts as a trust-broker that receives and validates client requests and generates appropriate tokens for a requested resource
+
+\subsubsection{Mobile and Social}
+
+Mobile: integrate iOS and Android mobile devices, policy enforcement on those devices, single-sign-on for mobile apps and browser based access, SDK on mobile devices. Social: integrate authentication, policies for social services.
+
+
+\subsubsection{Adaptive Authentication Service}
+
+Real-time and batch risk analytics to prevent fraud and misuse, risk based authentication, additional authentication methods, like One-Time-Passwords (OTP)
+
+
+\subsubsection{OAuth Services}
+
+OAuth 2.0 authentication client and server. Manage access control over domain borders.
+
+
+\subsubsection{Identity Context}
+
+Enable dynamic adation of permissions based on user related data, like location, last transactions, third party informations, other assigned permissions, etc.
 
 
 This document covers topics from Access Managament Access Manager only.
@@ -31,15 +67,39 @@ You can think of Access Manager as a general gate infront of all your applicatio
 
 \subsection{Use Cases}
 
-Let's make one assumption - to simplify our examples: the applications we are dealing with are web applications, to be more exact: the user interface is rendered in a standard conform Internet browser.
+Let's make one assumption --- to simplify our examples: the applications we are dealing with are web applications, to be more exact: the user interface is rendered in a standard conform Internet browser.
 
 There are ways to integrate legacy applications, however more analysis work has to be done beforehand. 
 
-Focusing on web applications, as it happens some design desicions are already taken, with unpretentious protocols: data transport and technical interface is HTTP(S).
+For web applications, the transport and integration protocol Access Management uses is HTTP{(S)}. Before our integration, the business application acts a as a stand-alone application, in respect of the user session. An application login page is presented to the user, in case the the that user has no active session. After some work done in the system the user may log out or the session runs in a time out (usually most of the user sessions end with time-outs). Both session related actions, login and logout are under control of the business application.
+
+The implementation of the login functionality is a critical area in several dimensions:
+
+* run time errors may block the whole business application
+* often an external system call is needed, the response data and its interpretation is not obvious or may change over time
+* accounts may be locked in different ways, what shall be the user error message?
+* the business application (perhaps a 3rd party application) needs to deal with user passwords
+
+Dealing with all those challenges, a centralized solution like a directory server, feels again like a redundant and error prone approach. Quite often it also becomes a dangerous approach, when one of the smaller business applications or an operational tool is lacking the last encryption method and sends plain text or logs one attribute more then it should.
+
+
+
+
+
+
 
 \emph{User opens resource (URI) to start a system transaction}
 
-So our start point is a user request for a resource, let's say a the first webpage of a customer maintenance workflow. The webpage is the resource the user requests.
+So our start point is a user request for a resource, let's say a the first webpage of a customer maintenance workflow. The webpage is the resource the user requests. Our hypothetical system feature has two UI screens:
+
+\begin{itemize}
+    \item Customer search by account id
+    \item Customer details screen
+\end{itemize}
+
+Access Management's webgate component is attached to the reverse proxy of the business application and inspects every request. The inspection starts like this:
+
+New request 
 
 
 
