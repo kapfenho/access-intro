@@ -2,17 +2,29 @@
 
 \chapter[Product Overview]{Product Overview}
 
-\section{Access Management}
+\section{Access Management Suite}
 
-
+Oracle Access Manager was aquiered by Oracle in
+XXX
+The Access Manager itself is the heart of Suite, while other products or new feature sets have been integrated. 
 
 
 \begin{itemize}
-    \item Access Manager
-    \item Identity Federation
-    \item Security Token Service
-    \item Mobile and Social
-    \item Adaptive Authentication Service
-    \item OAuth Services
-    \item Identity Context
+    \item Access Manager: Access Control, Single-Sign-On, Policies, Agent-Management
+    \item Identity Federation: cross-domain single sign-on support using open federation protocol standards such as SAML and OpenID
+    \item Security Token Service: token validation and generation to facilitate access to services across security domains and beyond organizational boundaries. Essentially the service acts as a trust-broker that receives and validates client requests and generates appropriate tokens for a requested resource
+    \item Mobile and Social: Mobile: integrate iOS and Android mobile devices, policy enforcement on those devices, single-sign-on for mobile apps and browser based access, SDK on mobile devices. Social: integrate authentication, policies for social services.
+    \item Adaptive Authentication Service: Real-time and batch risk analytics to prevent fraud and misuse, risk based authentication, additional authentication methods, like One-Time-Passwords (OTP)
+    \item OAuth Services: OAuth 2.0 authentication client and server. Manage access control over domain borders.
+    \item Identity Context: Enable dynamic adation of permissions based on user related data, like location, last transactions, third party informations, other assigned permissions, etc.
 \end{itemize}
+
+
+This document covers topics from Access Managament Access Manager only.
+
+
+\section{Access Manager}
+
+
+You can think of Access Manager as a general gate infront of all your applications that each request has to pass. The \emph{ticket} or the \emph{single sign on session} is stored centralized and at the client side (cookies). The individual implementations of the user login and logout are removed from applications during integration. Only authenticated requests can reach the application from now on. While an authorization policy enforcement is available and recommended, other products of the suite are likely necessary to for a covering different authorization requirements.
+
