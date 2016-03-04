@@ -1,4 +1,4 @@
-\documentclass[11pt]{memoir}
+\documentclass[11pt]{book}
 \usepackage{titling}
 \usepackage{geometry}
 \geometry{a4paper}
@@ -11,38 +11,42 @@
 \usepackage[colorlinks=true, pdfstartview=FitV, linkcolor=blue, 
             citecolor=blue, urlcolor=blue]{hyperref}
 
-%\newtheorem{theorem}{Theorem}
-%\newtheorem{corollary}[theorem]{Corollary}
-%\newtheorem{definition}{Definition}
-%\newtheorem{lemma}{Lemma}
-%\newtheorem{exercise}{Exercise}
-%\newtheorem{remark}{Remark}
-%\newtheorem{example}{Example}
-%\newtheorem{warning}{Warning}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{exercise}{Exercise}
+\newtheorem{remark}{Remark}
+\newtheorem{example}{Example}
+\newtheorem{warning}{Warning}
 
-%\def\grad{ \mbox{grad}}
-%\def\curl{ \mbox{curl}}
-%\def\div{ \mbox{div}}
-%\def\U{\ensuremath {\cal U}}
-%\def\S{\ensuremath {\cal S}}
-%\def\V{\ensuremath {\cal V}}
-%\def\R{\ensuremath {\cal R}}
-%\def\tr{\ensuremath {\mbox{tr}}}
+\def\grad{ \mbox{grad}}
+\def\curl{ \mbox{curl}}
+\def\div{ \mbox{div}}
+\def\U{\ensuremath {\cal U}}
+\def\S{\ensuremath {\cal S}}
+\def\V{\ensuremath {\cal V}}
+\def\R{\ensuremath {\cal R}}
+\def\tr{\ensuremath {\mbox{tr}}}
 
 
-\title{Access Management}
-\author{Horst Kapfenberger}
+\title{Access Management Introduction}
+
+\author{Horst Kapfenberger\thanks{including excerpts from Oracle Documentation}}
 \begin{document}
 
 
 \frontmatter
 \maketitle
 
+\newpage
+
 \tableofcontents
 
 \include{chapter01}
 \include{chapter02}
-
+\include{chapter03}
+\include{chapter04}
 
 \bibliographystyle{plain-annote}
 \bibliography{mybibliography}

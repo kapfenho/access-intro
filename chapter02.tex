@@ -1,109 +1,58 @@
 %!TEX root =  main.tex
 
-\chapter[Product Overview]{Product Overview}
+\chapter{Authentication}
 
-\section{Access Management Suite}
+\section{What's Authentication}
 
-Around 2010 Oracle corporation aquired a docen software vendors and technology companies in the identity and access management market. Among them were some niche players and also leaders, like Sun Microsystems with several active products and a stable user base.
-
-Developing a portfolio of twenty specialized systems to two or three tightly integrated solutions definitely the overal plan, but not every step is set straight on that path, looking at the footsteps we see sometimes.
-
-Next to the Identity Management Suite the Access Management Suite is the second major product group, where the collected technologies deal with run-time evaluation of user or system access.
-
-The Access Manager itself is the heart of Suite, where other products or new feature sets have been integrated or merged into.
-
-\begin{itemize}
-    \item Access Manager
-    \item Identity Federation
-    \item Security Token Service
-    \item Mobile and Social
-    \item Adaptive Authentication Service
-    \item OAuth Services
-    \item Identity Context
-\end{itemize}
-
-\subsubsection{Access Management Access Manager}
-
-As the central part of the suite, Access Manager delivers the adminstrative user interface. All authentication mechanisms are defined here and components and processes can be activated or cut-off in the admin user interface. Business applications can be registered and and external data sources with user data are connected.
-Distributed components, the policy enforcement points, are located closer to the protected business applications and request authentication and authorization information from the central access server over encrypted channels.
+\emph{Authentication} is the act of confirming the truth of an attribute
+of a single piece of data (a datum) claimed true by an entity. In
+contrast with \emph{identification} which refers to the act of stating
+or otherwise indicating a claim purportedly attesting to a person or
+thing's identity, authentication is the process of actually confirming
+that identity.
 
 
-\subsubsection{Identity Federation}
+\section{Authentication Factors}
 
-While Access Manager takes care of a single domain (or multiple but independent domains), Identity Federation helps to connect domains (e.g.\ two organizations with integrated business activities). In each activity the roles and responsibilities are well defined. Indentity Federations supports SAML and OpenID.
+The ways in which someone may be authenticated fall into three
+categories, based on what are known as the factors of authentication:
+something the user \emph{knows}, something the user \emph{has}, and
+something the user \emph{is}.\\*
 
-\subsubsection{Security Token Service}
-
-Token validation and generation to facilitate access to services across security domains and beyond organizational boundaries. Essentially the service acts as a trust-broker that receives and validates client requests and generates appropriate tokens for a requested resource
-
-\subsubsection{Mobile and Social}
-
-Mobile: integrate iOS and Android mobile devices, policy enforcement on those devices, single-sign-on for mobile apps and browser based access, SDK on mobile devices. Social: integrate authentication, policies for social services.
-
-
-\subsubsection{Adaptive Authentication Service}
-
-Real-time and batch risk analytics to prevent fraud and misuse, risk based authentication, additional authentication methods, like One-Time-Passwords (OTP)
+Each authentication factor covers a range of elements used to
+authenticate or verify a person's identity prior to being granted
+access, approving a transaction request, signing a document or other
+work product, granting authority to others, and establishing a chain of
+authority.\\*
 
 
-\subsubsection{OAuth Services}
+The three factor types and some of elements of each factor are:
 
-OAuth 2.0 authentication client and server. Manage access control over domain borders.
+\begin{enumerate}
 
+    \item \emph{knowledge factor}: something the user knows, e.g.\ a 
+        password, Partial Password, pass phrase, or personal identification 
+        number (PIN), challenge response (the user must answer a question, 
+        or pattern), Security question
 
-\subsubsection{Identity Context}
+    \item \emph{ownership factor}: something the user has (e.g.\ wrist band, 
+        ID card, security token, cell phone with built-in hardware token, 
+        software token, or cell phone holding a software token)
 
-Enable dynamic adation of permissions based on user related data, like location, last transactions, third party informations, other assigned permissions, etc.
+    \item \emph{inherence factor}: something the user is or does (e.g.\ 
+        fingerprint, retinal pattern, DNA sequence (there are assorted 
+        definitions of what is sufficient), signature, face, voice, 
+        unique bio-electric signals, or other biometric identifier)
 
-
-This document covers topics from Access Managament Access Manager only.
-
-
-\section{Access Manager}
-
-
-You can think of Access Manager as a general gate infront of all your applications that each request has to pass. The \emph{ticket} or the \emph{single sign on session} is stored centralized and at the client side (cookies). The individual implementations of the user login and logout are removed from applications during integration. Only authenticated requests can reach the application from now on. While an authorization policy enforcement is available and recommended, other products of the suite may be necessary to cover different authorization requirements.
-
-
-\subsection{Use Cases}
-
-Let's make one assumption --- to simplify our examples: the applications we are dealing with are web applications, to be more exact: the user interface is rendered in a standard conform Internet browser.
-
-There are ways to integrate legacy applications, however more analysis work has to be done beforehand. 
-
-For web applications, the transport and integration protocol Access Management uses is HTTP{(S)}. Before our integration, the business application acts a as a stand-alone application, in respect of the user session. An application login page is presented to the user, in case the the that user has no active session. After some work done in the system the user may log out or the session runs in a time out (usually most of the user sessions end with time-outs). Both session related actions, login and logout are under control of the business application.
-
-The implementation of the login functionality is a critical area in several dimensions:
-
-* run time errors may block the whole business application
-* often an external system call is needed, the response data and its interpretation is not obvious or may change over time
-* accounts may be locked in different ways, what shall be the user error message?
-* the business application (perhaps a 3rd party application) needs to deal with user passwords
-
-Dealing with all those challenges, a centralized solution like a directory server, feels again like a redundant and error prone approach. Quite often it also becomes a dangerous approach, when one of the smaller business applications or an operational tool is lacking the last encryption method and sends plain text or logs one attribute more then it should.
+\end{enumerate}
 
 
+For authentication to well-secured systems elements from at least two,
+and preferably all three, factors should be verified.
 
 
+\section{Authentication Methods}
+
+TODO
 
 
-
-\emph{User opens resource (URI) to start a system transaction}
-
-So our start point is a user request for a resource, let's say a the first webpage of a customer maintenance workflow. The webpage is the resource the user requests. Our hypothetical system feature has two UI screens:
-
-\begin{itemize}
-    \item Customer search by account id
-    \item Customer details screen
-\end{itemize}
-
-Access Management's webgate component is attached to the reverse proxy of the business application and inspects every request. The inspection starts like this:
-
-New request 
-
-
-
-
-
-
-% vi:set lbr breakindent:

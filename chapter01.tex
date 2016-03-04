@@ -1,12 +1,13 @@
 %!TEX root =  main.tex
 
-\chapter[Introduction]{Introduction}
+\chapter{Access Management}
 
-\section{Access Management}
+\section{Controlling Access}
 
-What is Access Management in IT? 
+What is Access Management in IT\@?
 
-In the area of information technology the subject "Access Management" has several subareas
+In the area of information technology the subject ``Access Management'' 
+has several subareas
 
 \begin{itemize}
     \item Application Security: restrict users and programs
@@ -15,25 +16,40 @@ In the area of information technology the subject "Access Management" has severa
 \end{itemize}
 
 
-\section{Authentication}
 
-\emph{Authentication} is the act of confirming the truth of an attribute of a single piece of data (a datum) claimed true by an entity. In contrast with \emph{identification} which refers to the act of stating or otherwise indicating a claim purportedly attesting to a person or thing's identity, authentication is the process of actually confirming that identity.
+\section{In Real Life: Border Controls}
 
-A good comparison to illustrate the main characteristics of authentication is \emph{border control}. That one you'll most often find on airports or on the actual boarder between countries\footnote{There was a time you had to leave \emph{Schengen Area} to find this seldom experience, nowadays there seems to be an inflation of borderline checks.}.
+A good comparison to illustrate the main characteristics of
+authentication is \emph{border control}. That one you'll most often find
+on airports or on the actual boarder between countries\footnote{There
+was a time you had to leave \emph{Schengen Area} to find this seldom
+experience, nowadays there seems to be an inflation of borderline
+checks.}.\\*
 
-You leave one domain, or more important: you enter another domain. A domain that has a certain definition, borders, and authorities that execute policies (for good and for bad, however).  Those brave officers want you to identify yourself - your job is to provide them data, exact and distinct data and some prove that you tell the truth.
+You leave one domain, or more important: you enter another domain. 
+A domain that has a certain definition, borders, and authorities that 
+execute policies (for good and for bad, however).  Those brave officers 
+want you to identify yourself --- your job is to provide them data, exact 
+and distinct data and some prove that you tell the truth.\\*
 
-The data is usually good enough to identify you among all human beings. That quality of your prove must satisfy the procedure of those border checks. With a valid passport you've own a document from a common trusted authority that covers both topics:
+The data is usually good enough to identify you among all human beings.
+That quality of your prove must satisfy the procedure of those border
+checks. With a valid passport you own a document from a common trusted
+authority that covers this.
 
 \begin{enumerate}
     \item[-] identifying you among all others and (identification)
-    \item[-] prove at the same time correctness of this statement (authentication)
+    \item[-] prove the correctness of this statement (authentication)
 \end{enumerate}
 
-For you, as the traveler, the desired outcome of this procedure is your valid entry without much delay.
+For you, as the traveler, the desired outcome of this procedure is your
+valid entry without much delay.
 
 
-\emph{Thinking more general - what other situations or outcomes are possible?}
+\subsection{Alternative Flows}
+
+Thinking more general, what other situations in or outcomes of this
+situation are possible?
 
 \begin{itemize}
     \item[-] you could pretend to be another person, perhaps from another country
@@ -46,31 +62,16 @@ For you, as the traveler, the desired outcome of this procedure is your valid en
 
 All those situations have a direct mapping to use cases in the IT world.
 
-One more thing is in common: it is not checked what exactly you are allowed to do (in the country or domain). There might be a rough categorization by authentication, like people from country X would also need a visa and people from country Y are not allowed at all to enter. But this is not the place where a work or residence permit would be checked (as far as I know).
+\subsection{Not Authorized}
 
-In IT those procedures were reused.
+One more thing is in common: it is not checked what exactly you are
+allowed to do (in the country or domain). There might be a rough
+categorization by authentication, like people from country X would also
+need a visa and people from country Y are not allowed at all to enter.
+But this is not the place where a work or residence permit would be
+checked (as far as I know).\\*
 
-
-\section{Authentication Factors}
-
-The ways in which someone may be authenticated fall into three categories, based on what are known as the factors of authentication: something the user \emph{knows}, something the user \emph{has}, and something the user \emph{is}.
-
-Each authentication factor covers a range of elements used to authenticate or verify a person's identity prior to being granted access, approving a transaction request, signing a document or other work product, granting authority to others, and establishing a chain of authority.
-
-For authentication to well-secured systems elements from at least two, and preferably all three, factors should be verified.
-
-The three factors (classes) and some of elements of each factor are:
-
-\begin{enumerate}
-
-    \item knowledge factor: something the user knows (e.g. a password, Partial Password, pass phrase, or personal identification number (PIN), challenge response (the user must answer a question, or pattern), Security question
-
-    \item ownership factor: something the user has (e.g. wrist band, ID card, security token, cell phone with built-in hardware token, software token, or cell phone holding a software token)
-
-    \item inherence factor: something the user is or does (e.g. fingerprint, retinal pattern, DNA sequence (there are assorted definitions of what is sufficient), signature, face, voice, unique bio-electric signals, or other biometric identifier)
-
-\end{enumerate}
-
-
+Using our vocabulary, \emph{we are authenticated but no authorization 
+check has been done}.
 
 
