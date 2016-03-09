@@ -1,0 +1,271 @@
+%!TEX root =  main.tex
+
+\section{Access Manager}
+
+\subsection{Overview}
+
+You can think of Access Manager as a general gate, in front of all your
+applications, that each request has to pass. It ensures that only
+authenticated requests are allowed to pass to the business application
+that you are protecting.
+
+For public accessible areas the authentication check is disabled. In
+addition you can also skip auditing in this area, in case the data would
+not be used anyway.
+
+The session of an authenticated user defines the access and is protected 
+agains external changes. The \emph{ticket} or the \emph{single sign on 
+session} is stored central as well on the client (using cookies).
+
+The boundaries of the single-sign-on session can be defined by domain
+and subdomain namespaces. However this will only be enforced for
+integrated applications.
+
+Each session has set a \emph{general time-out} and an \emph{inactivity
+time-out}. The general time out will close the session and force a
+reauthentication, no matter if there is currently any activity ongoing
+or not. Default value of this general time-out is 24 hours. The
+inactivity time-out is set to a shorter period, depending on the
+customer needs and security level.
+
+Integrated applications often require an application session as well,
+where user data is attached to. This session information is not touched 
+by Access Manager.
+
+
+The \emph{integration} of an application is relative simple exercise, since we
+essentially remove functionality and code. In particular the login and
+logout functionality is removed. Instead of returning an application
+login page, the application can take the attached information like user
+name, user ID, or roles, and continue with the transaction.
+
+The logout link or button of the business application will remain on the
+user interface. The business application will just redirect the user to
+the general logout URI, which will trigger the necessary logout
+callbacks to the used business applications. So the user sessions will
+savely be closed on a general logout. However, as before this is
+triggered when the user actively executes a logout.
+
+The individual implementations of the user login and logout are removed
+from applications during integration. Only authenticated requests can
+reach the application from now on. While an authorization policy
+enforcement is available and recommended, other products of the suite
+may be necessary to cover different authorization requirements.
+
+
+
+% ====================================================================
+
+\section{Components of Access Manager}
+
+In the following pages I will explain what parts or topics Access
+Manager consists of and what the are good for:
+
+\begin{itemize}
+    \item Access Server
+    \item Application Domains and Resources
+    \item Identity Store
+    \item Session Store
+    \item Policy Enforcement Points: Agents
+    \item Webgate Agent
+    \item SSO Cookies
+    \item Credential Collector
+    \item Certificate Validation and Revocation
+\end{itemize}
+
+
+
+
+\subsection{Access Server}
+
+The Access Server is the \emph{backend runtime component} that serves
+requests of the \emph{Policy Enforcement Points}. It is implemented as
+J2EE service and Oracle supports Oracle WebLogic and IBM WebShpere as
+application servers. In WebLogic the services are deployed to one or
+more managed servers grouped in a WebLogic cluster.  Most of the
+interfaces and protocols are based on open standards, an exception here
+is the propriary protocol to the policy enforcement points, called OAP
+(Oracle Access Protocol).
+
+The configuration can be done using the web user interface 
+\emph{OAMConsole}, hosted on the WebLogic Admin Server. Many features
+can also be configured using shell scripts or the WebLogic scripting
+environment WLST\@. The substantial configuration is persisted as XML
+file. Bindings and policies are stored in the relational database base
+schema.
+
+
+\subsection{Application Domains and Resources}
+
+The value of an production access system, comes from the integrated
+business applications. Therefore the management of those business
+applications and their policies is a central area in Access Manager.
+
+Applications are mapped to application domains. This mapping can be done  
+as an one-to-one relation, but also other transformations are possible,
+as long as it helps the operational team to treat the integration as one
+consistent block of applications, which is integrated or maintained at
+once.
+
+Each application domain consists of multiple resources. A resource can
+be seen as an entitlement in the application domain. Since all resources
+are expressed as \emph{Uniform Resource Identifier (URI)}, Access
+Management uses the URI component \emph{path} and optionally \emph{query} and
+\emph{fragment} as resource identifier.
+
+Example resource identifier: \verb|/orders/**|
+
+
+
+\subsection{Identity Store}
+
+To execute the main feature of Access Manager, the authentication, we
+need at least one set of identities that are allowed to authenticate.
+This set must be stored in a supported directory server and should be
+\emph{close} to Access Manager, in operational and data ownership
+perspective.
+
+Access Manager will read from and write to this identity store. The
+required initial information in the store is the user login and some
+status information of the user account.
+
+Access Manager stores additional runtime data attached to the user
+information.
+
+Optional information that can be stored in the identity store can be
+\emph{user credentials}, \emph{user roles}, etc.
+
+In case you deploy \emph{Access Manager} with \emph{Oracle Identity
+Manager} the directory is automatically populated and acts as a data hub
+between Identity and Access Management.
+
+
+\subsection{Session Store}
+
+We already mentioned where user sessions are stored. But let's have a
+closer look here.
+
+For Access Manager it is essential to have clear accounting of active
+user sessions, with additional information attached to them:
+
+\begin{itemize}
+    \item when did the session start
+    \item timestamps used for time-outs
+    \item authentication method used
+    \item current and original authentication levels
+    \item reference to identity store
+    \item location (if applicable)
+\end{itemize}
+
+This information must be served quickly with high availability
+requirements. Access Manager maintains this list in Coherence.
+
+\begin{framed}
+    Oracle Coherence is a proprietary in-memory data grid, that improves
+    performance, scalability and reliability compared to relational
+    databases. It can be used as an persistence system or as a caching
+    method in combination to relational database system.
+    
+    Coherence was developed by \emph{Tangosol Inc.}, which was acquired 
+    by Oracle Corporation in 2007. Several Oracle applications, like 
+    Access Manager or SOA, use Coherence.
+\end{framed}
+
+The Access Manager admin interface \emph{oamconsole} comes with a
+feature for querying and maintaining the session list.
+
+The session information placed at the client side is described in the
+section Cookies.
+
+
+\subsection{Policy Enforcement Points: Agents}
+
+The Policy Enforcement Points are the components actively asking Access
+Manager for user access. They act as gatekeeper to the business
+applications.
+
+
+
+
+\subsection{Webgate Agent}
+
+TODO
+
+
+\subsection{SSO Cookies}
+
+TODO
+
+
+\subsection{Credential Collectors}
+
+TODO
+
+
+\subsection{Certificate Validation and Revocation}
+
+TODO
+
+
+\section{A Sample Use Case}
+
+Let's make one assumption --- to simplify our examples: the applications
+we are dealing with are web applications, to be more exact: the user
+interface is rendered in a standard conform Internet browser.
+
+There are ways to integrate legacy applications, however more analysis
+work has to be done beforehand.
+
+For web applications, the transport and integration protocol is HTTP or
+HTTPS\@. Before our integration, the business application acts a as a
+stand-alone application, in respect of the user session. An application
+login page is presented to the user, in case the user has no active
+session. After some work the user may log out or the session will be
+finaly terminated by a time out (usually most of the user sessions end
+with time-outs). Both session related actions, login and logout are
+under control of the business application.
+
+The implementation of the login functionality is critical, it is
+critical in mutiple ways:
+
+\begin{itemize}
+    \item run time errors may block the whole business application
+    \item often an external system call is needed, the response data 
+        and its interpretation is not obvious or may change over time
+    \item accounts may be locked in different ways, what shall be the 
+        user error message?
+    \item the business application (perhaps a 3rd party application) 
+        needs to deal with user passwords
+\end{itemize}
+
+Dealing with all those challenges, a centralized solution like a
+directory server, feels again like a redundant and error prone approach.
+Quite often it also becomes a dangerous approach, when one of the
+business applications or an operational tool is lacking the last
+encryption method and sends plain text or it logs one attribute more
+then it should (yes login credentials is not an uncommon problem).
+
+
+
+
+
+
+
+\emph{User opens resource (URI) to start a system transaction}
+
+So our start point is a user request for a resource, let's say a the first webpage of a customer maintenance workflow. The webpage is the resource the user requests. Our hypothetical system feature has two UI screens:
+
+\begin{itemize}
+    \item Customer search by account id
+    \item Customer details screen
+\end{itemize}
+
+Access Management's webgate component is attached to the reverse proxy of the business application and inspects every request. The inspection starts like this:
+
+New request 
+
+
+\section{Sample Configuration}
+
+
+% vi:set lbr breakindent:

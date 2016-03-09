@@ -1,57 +1,61 @@
 \documentclass[11pt]{book}
-\usepackage{titling}
 \usepackage{geometry}
 \geometry{a4paper}
-%\usepackage[parfill]{parskip}
+% \usepackage[parfill]{parskip}
+\usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \usepackage{amssymb}
 \usepackage{epstopdf}
-\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+\usepackage{framed}
+
+% \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+\sloppy
 
 \usepackage[colorlinks=true, pdfstartview=FitV, linkcolor=blue, 
             citecolor=blue, urlcolor=blue]{hyperref}
 
-\newtheorem{theorem}{Theorem}
-\newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{definition}{Definition}
-\newtheorem{lemma}{Lemma}
-\newtheorem{exercise}{Exercise}
-\newtheorem{remark}{Remark}
-\newtheorem{example}{Example}
-\newtheorem{warning}{Warning}
+% \newtheorem{theorem}{Theorem}
+% \newtheorem{corollary}[theorem]{Corollary}
+% \newtheorem{definition}{Definition}
+% \newtheorem{lemma}{Lemma}
+% \newtheorem{exercise}{Exercise}
+% \newtheorem{remark}{Remark}
+% \newtheorem{example}{Example}
+% \newtheorem{warning}{Warning}
 
-\def\grad{ \mbox{grad}}
-\def\curl{ \mbox{curl}}
-\def\div{ \mbox{div}}
-\def\U{\ensuremath {\cal U}}
-\def\S{\ensuremath {\cal S}}
-\def\V{\ensuremath {\cal V}}
-\def\R{\ensuremath {\cal R}}
-\def\tr{\ensuremath {\mbox{tr}}}
+% \def\grad{ \mbox{grad}}
+% \def\curl{ \mbox{curl}}
+% \def\div{ \mbox{div}}
+% \def\U{\ensuremath {\cal U}}
+% \def\S{\ensuremath {\cal S}}
+% \def\V{\ensuremath {\cal V}}
+% \def\R{\ensuremath {\cal R}}
+% \def\tr{\ensuremath {\mbox{tr}}}
 
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
 
 \title{Access Management Introduction}
 
-\author{Horst Kapfenberger\thanks{including excerpts from Oracle Documentation}}
+\author{Horst Kapfenberger \thanks{including excerpts from Oracle Documentation} }
 \begin{document}
 
 
 \frontmatter
 \maketitle
-
 \newpage
-
 \tableofcontents
 
-\include{chapter01}
-\include{chapter02}
-\include{chapter03}
-\include{chapter04}
+\mainmatter
+
+\include{section01}
+\include{section02}
+\include{section03}
+\include{section04}
 
 \bibliographystyle{plain-annote}
 \bibliography{mybibliography}
 
+\appendix
 
 \end{document}
-\end
-
