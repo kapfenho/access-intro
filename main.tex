@@ -1,7 +1,9 @@
-\documentclass[11pt]{book}
+%! program = pdflatex
+
+\documentclass[11pt]{report}
 \usepackage{geometry}
 \geometry{a4paper}
-% \usepackage[parfill]{parskip}
+\usepackage[parfill]{parskip}
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \usepackage{amssymb}
@@ -9,9 +11,10 @@
 \usepackage{framed}
 
 % \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
 \sloppy
 
-\usepackage[colorlinks=true, pdfstartview=FitV, linkcolor=blue, 
+\usepackage[colorlinks=true, pdfstartview=FitV, linkcolor=blue,
             citecolor=blue, urlcolor=blue]{hyperref}
 
 % \newtheorem{theorem}{Theorem}
@@ -32,30 +35,28 @@
 % \def\R{\ensuremath {\cal R}}
 % \def\tr{\ensuremath {\mbox{tr}}}
 
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
+%\setlength{\parindent}{0pt}
+%\setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
 
 \title{Access Management Introduction}
-
-\author{Horst Kapfenberger \thanks{including excerpts from Oracle Documentation} }
+\author{Horst Kapfenberger, Agora Con GmbH}
 \begin{document}
 
+% \frontmatter
 
-\frontmatter
 \maketitle
 \newpage
-\tableofcontents
 
-\mainmatter
+\tableofcontents
 
 \include{section01}
 \include{section02}
 \include{section03}
 \include{section04}
 
+% \backmatter
+
 \bibliographystyle{plain-annote}
 \bibliography{mybibliography}
-
-\appendix
 
 \end{document}
