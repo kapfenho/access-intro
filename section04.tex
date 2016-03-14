@@ -1,21 +1,69 @@
 %!TEX root =  main.tex
 
-\section{Access Manager}
+\chapter{Access Manager}
 
-\subsection{Overview}
 
-You can think of Access Manager as a general gate, in front of all your
-applications, that each request has to pass. It ensures that only
-authenticated requests are allowed to pass to the business application
-that you are protecting.
+\section{Overview}
 
-For public accessible areas the authentication check is disabled. In
-addition you can also skip auditing in this area, in case the data would
-not be used anyway.
+The role of Access Manager can be described as a gate keeper, in front
+of all business applications. Each user request needs to pass this gate
+keeper. It ensures that only authenticated requests are allowed to reach
+the protected business application.
 
-The session of an authenticated user defines the access and is protected 
-agains external changes. The \emph{ticket} or the \emph{single sign on 
-session} is stored central as well on the client (using cookies).
+\begin{framed}
+
+    All integration practices described are considering the integration
+    of web applications. Web applications are applications that deliver 
+    the user interface via HTTP or HTTPS\@.
+
+\end{framed}
+
+Access Manager delivers a common used, central login functionality, the
+user authentication. The authentication method presented to the user is
+determined based on several input parameter, like the resource the user
+tries to access, the date and time, perhaps the user location or device
+used, or the type of user access manager recognizes already
+before the authentication.
+
+The implementation of login functionality is per se critical and it is
+critical in multiple ways:
+
+\begin{itemize}
+
+    \item run time errors may block the whole business application
+
+    \item often an external system call is needed, the response data 
+        and its interpretation is not obvious or may change over time
+
+    \item accounts may be locked in different ways, what shall be the 
+        user error message?
+
+    \item the business application (perhaps a closed source 3rd party
+        application) needs to deal with user passwords
+
+\end{itemize}
+
+Dealing with all those challenges, a centralized solution like a
+directory server, feels again like a redundant and error prone approach.
+Quite often it also becomes a dangerous approach, when one of the
+business applications or an operational tool is lacking the latest and
+mandatory encryption cipher and now sends plain text or it logs one
+attribute more than it should (yes, credentials in log files is not an
+uncommon problem).
+
+
+But not all application areas may trigger an authentication.  For public
+accessible areas the authentication check can be disabled in the
+\emph{application domain} configuration. In addition auditing records
+can be disabled for public accessible area.  This prevents data
+collections of no usage or even prohibited usage.
+
+The single-sign-on session of an authenticated user includes its current
+authentication level.  We can perceive the session as an \emph{ticket}
+to the systems behind the gate keeper.  This ticket is stored central on
+the access server and also on the client (using cookies, protected
+against external changes). This authentication level is matched the
+minimum authentication level attached to the resource the user requests.
 
 The boundaries of the single-sign-on session can be defined by domain
 and subdomain namespaces. However this will only be enforced for
@@ -23,27 +71,35 @@ integrated applications.
 
 Each session has set a \emph{general time-out} and an \emph{inactivity
 time-out}. The general time out will close the session and force a
-reauthentication, no matter if there is currently any activity ongoing
+re-authentication, no matter if there is currently any activity ongoing
 or not. Default value of this general time-out is 24 hours. The
 inactivity time-out is set to a shorter period, depending on the
 customer needs and security level.
 
-Integrated applications often require an application session as well,
-where user data is attached to. This session information is not touched 
+
+\section{Application Integration}
+
+Business applications often require an independent application session,
+where user data is attached to. This session information is not touched
 by Access Manager.
 
+Before our integration, the business application did act a as a
+stand-alone application, in terms of the user session. An application
+login page was presented to the user, in case the user had no active
+session.
 
-The \emph{integration} of an application is relative simple exercise, since we
-essentially remove functionality and code. In particular the login and
-logout functionality is removed. Instead of returning an application
-login page, the application can take the attached information like user
-name, user ID, or roles, and continue with the transaction.
+The \emph{integration} of an application is relative simple exercise,
+since we essentially remove functionality and code. In particular the
+login and logout functionality is removed. Instead of returning an
+application login page, the application can take the attached
+information like user name, user ID, or roles, and continue with the
+transaction.
 
 The logout link or button of the business application will remain on the
 user interface. The business application will just redirect the user to
 the general logout URI, which will trigger the necessary logout
 callbacks to the used business applications. So the user sessions will
-savely be closed on a general logout. However, as before this is
+safely be closed on a general logout. However, as before this is
 triggered when the user actively executes a logout.
 
 The individual implementations of the user login and logout are removed
@@ -56,7 +112,7 @@ may be necessary to cover different authorization requirements.
 
 % ====================================================================
 
-\section{Components of Access Manager}
+\chapter{Components of Access Manager}
 
 In the following pages I will explain what parts or topics Access
 Manager consists of and what the are good for:
@@ -76,15 +132,15 @@ Manager consists of and what the are good for:
 
 
 
-\subsection{Access Server}
+\section{Access Server}
 
 The Access Server is the \emph{backend runtime component} that serves
 requests of the \emph{Policy Enforcement Points}. It is implemented as
-J2EE service and Oracle supports Oracle WebLogic and IBM WebShpere as
+J2EE service and Oracle supports Oracle WebLogic and IBM WebSphere as
 application servers. In WebLogic the services are deployed to one or
 more managed servers grouped in a WebLogic cluster.  Most of the
 interfaces and protocols are based on open standards, an exception here
-is the propriary protocol to the policy enforcement points, called OAP
+is the proprietary protocol to the policy enforcement points, called OAP
 (Oracle Access Protocol).
 
 The configuration can be done using the web user interface 
@@ -95,7 +151,7 @@ file. Bindings and policies are stored in the relational database base
 schema.
 
 
-\subsection{Application Domains and Resources}
+\section{Application Domains and Resources}
 
 The value of an production access system, comes from the integrated
 business applications. Therefore the management of those business
@@ -117,7 +173,7 @@ Example resource identifier: \verb|/orders/**|
 
 
 
-\subsection{Identity Store}
+\section{Identity Store}
 
 To execute the main feature of Access Manager, the authentication, we
 need at least one set of identities that are allowed to authenticate.
@@ -140,7 +196,7 @@ Manager} the directory is automatically populated and acts as a data hub
 between Identity and Access Management.
 
 
-\subsection{Session Store}
+\section{Session Store}
 
 We already mentioned where user sessions are stored. But let's have a
 closer look here.
@@ -161,6 +217,7 @@ This information must be served quickly with high availability
 requirements. Access Manager maintains this list in Coherence.
 
 \begin{framed}
+
     Oracle Coherence is a proprietary in-memory data grid, that improves
     performance, scalability and reliability compared to relational
     databases. It can be used as an persistence system or as a caching
@@ -169,6 +226,7 @@ requirements. Access Manager maintains this list in Coherence.
     Coherence was developed by \emph{Tangosol Inc.}, which was acquired 
     by Oracle Corporation in 2007. Several Oracle applications, like 
     Access Manager or SOA, use Coherence.
+
 \end{framed}
 
 The Access Manager admin interface \emph{oamconsole} comes with a
@@ -178,94 +236,149 @@ The session information placed at the client side is described in the
 section Cookies.
 
 
-\subsection{Policy Enforcement Points: Agents}
+\section{Policy Enforcement Points: Agents}
 
-The Policy Enforcement Points are the components actively asking Access
-Manager for user access. They act as gatekeeper to the business
-applications.
+The Policy Enforcement Points (PEP) are the components actively asking
+Access Manager for user access and are enforcing this policy. They act
+as gatekeeper to the business applications. One agent implementation is
+shipped with the Access Manager Suite, other Oracle implementations are
+available but are considered deprecated. Furthermore individual
+implementations are supported.
 
+To fulfill its work as gatekeeper a PEP has to be involved in every
+client request to the business application, preferably very early in the
+request processing to protect the application from different types of
+attacks.
 
+For web applications this is usually done in the \emph{demilitarized zone
+(DMZ)}, on an perhaps already existing \emph{reverse proxy}.
 
-
-\subsection{Webgate Agent}
-
-TODO
-
-
-\subsection{SSO Cookies}
-
-TODO
-
-
-\subsection{Credential Collectors}
-
-TODO
-
-
-\subsection{Certificate Validation and Revocation}
-
-TODO
-
-
-\section{A Sample Use Case}
-
-Let's make one assumption --- to simplify our examples: the applications
-we are dealing with are web applications, to be more exact: the user
-interface is rendered in a standard conform Internet browser.
-
-There are ways to integrate legacy applications, however more analysis
-work has to be done beforehand.
-
-For web applications, the transport and integration protocol is HTTP or
-HTTPS\@. Before our integration, the business application acts a as a
-stand-alone application, in respect of the user session. An application
-login page is presented to the user, in case the user has no active
-session. After some work the user may log out or the session will be
-finaly terminated by a time out (usually most of the user sessions end
-with time-outs). Both session related actions, login and logout are
-under control of the business application.
-
-The implementation of the login functionality is critical, it is
-critical in mutiple ways:
+For incoming request those attributes are evaluated:
 
 \begin{itemize}
-    \item run time errors may block the whole business application
-    \item often an external system call is needed, the response data 
-        and its interpretation is not obvious or may change over time
-    \item accounts may be locked in different ways, what shall be the 
-        user error message?
-    \item the business application (perhaps a 3rd party application) 
-        needs to deal with user passwords
+    \item requested resource (URI): host and path
+    \item existing cookies
+    \item misc.\ attributes, like location, etc.
+    \item verification data from access server
 \end{itemize}
 
-Dealing with all those challenges, a centralized solution like a
-directory server, feels again like a redundant and error prone approach.
-Quite often it also becomes a dangerous approach, when one of the
-business applications or an operational tool is lacking the last
-encryption method and sends plain text or it logs one attribute more
-then it should (yes login credentials is not an uncommon problem).
+Since there is no policy information stored in distributed locations,
+where PEP are deployed, those information must be gathered from the
+access server.  This information is heavily cached in the PEP, to speed
+up decision response time and throughput.
 
-
-
-
-
-
-
-\emph{User opens resource (URI) to start a system transaction}
-
-So our start point is a user request for a resource, let's say a the first webpage of a customer maintenance workflow. The webpage is the resource the user requests. Our hypothetical system feature has two UI screens:
+Possible outcomes of the decision are:
 
 \begin{itemize}
-    \item Customer search by account id
-    \item Customer details screen
+    \item redirect to credential collector
+    \item let request pass with audit entry
+    \item let request pass without audit entry
 \end{itemize}
 
-Access Management's webgate component is attached to the reverse proxy of the business application and inspects every request. The inspection starts like this:
+The communication to the Access Server is crucial and must be protected
+against attacks. Access Manager and the PEP implementation can be
+configured to use a general encryption key (this is the default setting)
+or agent instance related keys.
 
-New request 
+
+\section{Webgate Agent}
+
+The Webgate Agent is a Policy Enforcement Point implementation to deploy
+on HTTP Servers like \emph{Oracle Web Server} or the \emph{Apache
+HTTPD}.\footnote{There has been a version available for Microsoft
+    Internet Information Server (IIS). This versions was seemed to be outdated
+    and the author was not able to install this binary successfully.
+    Since reverse proxies based on Windows are not widely used, I would
+not expect further development in this area.} It is shipped as a binary,
+compiled for the main platforms, and is integrated as a module for the
+web server. No additional run time process is necessary.
+
+The necessary configuration is done inside the HTTPD configuration file
+and a general setup with its own configuration file. The communication
+channel to the Access Server is protected by certificates located in
+configuration directory. There are two types of protection:
+
+\begin{itemize}
+    \item protecting all agents with the same key
+    \item protecting each agent with an individual key
+\end{itemize}
+
+The standard HTTPD configuration defines which requests are covered by
+Webgate.  For not included resources Webgate and Access Manager are not
+involved at all.  For covered resources the decision outcome may also be
+\emph{public available}, however the resource must be known to Access
+Manager, otherwise an error will be returned to the user.
+
+Agents can be configured with a broad range of log options. Those logs
+are stored on the reverse proxy and are not to be confused with the
+central stored audit logs. Particular care is recommended to not include 
+sensitive request payload information in the log files.
 
 
-\section{Sample Configuration}
+\section{SSO Cookies}
+
+Within the area of Access Manager nine different types of HTTP cookies
+are used. Typically three or four cookies are in use in one setup,
+if legacy support is needed. Those cookies are automatically encrypted
+or signed by the server components.
+
+The \emph{Oracle Fusion Middleware Administrator's Guide for Oracle Access
+Management} contains the exhausted list of nine types and description
+under what circumstances each type is deployed.
+
+
+
+\section{Credential Collectors}
+
+Credential Collectors are web sites with an embedded form, requesting a
+user identifier and  credentials to authenticate. The user is redirected
+to a credential collector, because he requested a resource and his
+current authentication level is lower than required for accessing the
+requested resource. To access the resource an certain authentication is
+necessary and the user is required to do so. During the authentication
+process the original request shall not be lost, otherwise the user would
+perhaps authenticate successfully but not get the resource he asked for.
+Therefore the request data is dragged along the whole process.
+
+There are two types of credential collectors:
+
+\begin{description}
+
+    \item[Embedded Credential Collector (ECC)] Located in 
+        WebLogic managed server of Access Manager. The ECC is shipped
+        with the product, customization possibilities are limited.
+
+    \item[Detached Credential Collector (DCC)] Located outside 
+        Access Manager, preferably in the DMZ\@. No Java application
+        server needed. A \emph{Perl} implementation as sample code is 
+        included with product.
+
+\end{description}
+
+The main difference is the location in the network architecture and the
+security consequences of this decision. While the usage of ECC allow 
+unauthenticated requests to reach application tier, DCC terminates all
+unauthenticated requests already in the DMZ\@. 
+
+
+
+\section{Certificate Validation and Revocation}
+
+This module delivers standard services for a \emph{Private Key
+Infrastructure (PKI)} for announcing the validity of X.509 certificates
+in a domain. The current version of the service definition can be found
+in 
+
+\begin{itemize}
+    \item RFC 5280 Internet X.509 Public Key Infrastructure Certificate
+        and Certificate Revocation List (CRL) Profile
+    \item RFC 6960 X.509 Internet Public Key Infrastructure Online
+        Certificate Status Protocol (OCSP)
+\end{itemize}
+
+While CRL are signed list of all certificate revocations of the domain,
+OCSP is an online status protocol that can be used by clients or 
+during preprocessing by a delivery service, know as \emph{OCSP Stapling}.
 
 
 % vi:set lbr breakindent:

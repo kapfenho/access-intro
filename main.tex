@@ -17,35 +17,35 @@
 \usepackage[colorlinks=true, pdfstartview=FitV, linkcolor=blue,
             citecolor=blue, urlcolor=blue]{hyperref}
 
-% \newtheorem{theorem}{Theorem}
-% \newtheorem{corollary}[theorem]{Corollary}
-% \newtheorem{definition}{Definition}
-% \newtheorem{lemma}{Lemma}
-% \newtheorem{exercise}{Exercise}
-% \newtheorem{remark}{Remark}
-% \newtheorem{example}{Example}
-% \newtheorem{warning}{Warning}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
 
-% \def\grad{ \mbox{grad}}
-% \def\curl{ \mbox{curl}}
-% \def\div{ \mbox{div}}
-% \def\U{\ensuremath {\cal U}}
-% \def\S{\ensuremath {\cal S}}
-% \def\V{\ensuremath {\cal V}}
-% \def\R{\ensuremath {\cal R}}
-% \def\tr{\ensuremath {\mbox{tr}}}
+\title{Introduction to Access Management \\
+using Oracle Access Manager}
+\author{Horst Kapfenberger}
+\date{March 14, 2016}
 
-%\setlength{\parindent}{0pt}
-%\setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
-
-\title{Access Management Introduction}
-\author{Horst Kapfenberger, Agora Con GmbH}
 \begin{document}
 
-% \frontmatter
-
 \maketitle
-\newpage
+
+\begin{abstract}
+    Introduction to Access Management in the area of Information
+    Technology.  Description of user authentication, authentication
+    factors and methods.
+   
+    Further explanation is done on the basis of an established
+    proprietary software, \emph{Oracle Access Management Access
+    Manager}.
+    
+    Detailed description of the Single-Sign-On process and the
+    implementation in the considered product.
+
+    Sample messages and software configuration excerpts are added.
+\end{abstract}
+
+
+% \newpage
 
 \tableofcontents
 
@@ -53,8 +53,7 @@
 \include{section02}
 \include{section03}
 \include{section04}
-
-% \backmatter
+\include{section05}
 
 \bibliographystyle{plain-annote}
 \bibliography{mybibliography}
