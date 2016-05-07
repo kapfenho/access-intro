@@ -4,13 +4,14 @@
 \usepackage{geometry}
 \geometry{a4paper}
 \usepackage[parfill]{parskip}
+\usepackage{fancyvrb}
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \usepackage{amssymb}
 \usepackage{epstopdf}
 \usepackage{framed}
-
-% \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+\usepackage{float}
+\usepackage{color}
 
 \sloppy
 
@@ -23,9 +24,14 @@
 \title{Introduction to Access Management \\
 using Oracle Access Manager}
 \author{Horst Kapfenberger}
-\date{April 19, 2016}
+\date{May 7, 2016}
 
 \begin{document}
+
+\RecustomVerbatimEnvironment
+  {Verbatim}{Verbatim}
+  {numbers=left,frame=lines,fontsize=\scriptsize,framesep=4mm}
+
 
 \maketitle
 
@@ -44,8 +50,6 @@ using Oracle Access Manager}
     Sample messages and software configuration excerpts are added.
 \end{abstract}
 
-
-% \newpage
 
 \tableofcontents
 
@@ -80,6 +84,7 @@ reported.
 Access Management delivers sustainability in those areas:
 
 \begin{description}
+
     \item[Application Security] --- restrict users and programs, recognise
         system abuse, identify identity theft
     \item[User Productivity] --- providing users with ease access to their
@@ -89,6 +94,7 @@ Access Management delivers sustainability in those areas:
         on open internet protocols
     \item[Compliance] --- as additional value delivered, compliance itself
         usually won't work as impulse or driver
+
 \end{description}
 
 
@@ -115,9 +121,11 @@ checks. With a valid passport you own a document from a common trusted
 authority that covers this.
 
 \begin{enumerate}
+
     \item identifying you among all others \emph{(identification)} and
     \item prove the correctness of your statement
         \emph{(authentication)}
+
 \end{enumerate}
 
 For you, as the traveler, the desired outcome of this procedure is your
@@ -130,6 +138,7 @@ Thinking more general, what other situations in or outcomes of this
 situation are possible?
 
 \begin{itemize}
+
     \item you could pretend to be another person, perhaps from another 
         country
     \item you could sneak in the country, preventing any check
@@ -139,6 +148,7 @@ situation are possible?
     \item your passport is expired and you are not allowed to enter the 
         country
     \item etc.
+
 \end{itemize}
 
 All those situations have a direct mapping to use cases in the IT world.
@@ -881,6 +891,400 @@ condition result is done in the rule.
 \end{description}
 
 
+% -------------------------------------------------------------------------
+
+\chapter{Proof of Concept}
+
+\section{Summary}
+
+The Proof of Concept (PoC) is virtual machine including all software and
+configuration to run \emph{Oracle Access Manager 11gR2} and an additional web
+application that has been integrated into the Access Manager architecture.
+
+The Oracle components have been setup automatically using \emph{iam-deployer}.
+The project management software \emph{Redmine} is used to demonstrate the
+integration procedure and Access Manager features.
+
+
+\section{Software Components}
+
+The virtual machine is running CentOS 6.7 64bit, 32 GB RAM and a total
+disk space of 50 GB have been assigned.  For kernel parameter and system
+configuration please see iam-deployer.
+
+Following Oracle suite components are setup:
+
+\begin{itemize}
+
+    \item Oracle Access Manager 11.1.2.3
+    \item Oracle Identity Manager 11.1.2.3
+    \item Oracle Unified Directory 11.1.2.3
+    \item Oracle HTTP Server 11.1.2.3 (based on Apache 2.2) 
+    \item Oracle Database Enterprise Edition 11.2
+
+\end{itemize}
+
+The sample web application consists of these components:
+
+\begin{itemize}
+
+    \item Redmine 3.2.1
+    \item Thin 1.6.4 (Ruby 2.3, Rails 4.2)
+    \item MySQL Server 5.1.73
+
+\end{itemize}
+
+HW-Load balancer replacement and TLS termination:
+
+\begin{itemize}
+
+    \item HAProxy 1.5.4
+
+\end{itemize}
+
+
+Since PS3 the default setup of the Oracle suite requires an amount of RAM that
+makes it difficult to run the virtual machine on a standard laptop.  Therefore
+the VM is hosted in Vienna, access for DWP Bank is enabled.  An copy of the VM
+can be downloaded.
+
+
+
+\section{SSO Process Flow}
+
+A sign-on using Access Manager triggers a certain number of system
+interactions, depending on the configuration, the requested resource and the
+required authentication methods.
+
+The first diagram is a simplified overview, the second is a more detailed
+sequence diagram of those interactions.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{diag/msgdiag}
+    \caption{Login process with messages}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{diag/seqdiag}
+    \caption{Sequence diagram of SSO login process}
+\end{figure}
+
+
+
+\section{HTTP Routing}
+
+It is important to understand the routing of the client HTTP requests.  The
+access control is taking place before the request reaches the addressed
+resource.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{diag/iamvs}
+    \caption{HTTP routing to applications}
+\end{figure}
+
+
+\newpage
+
+\section{Infrastructure Configuration}
+
+The configuration here is based on an properly configured Access Manager
+instance, e.g.\ created by \verb|iam-deployer|.
+
+
+\subsection{Domain Name Entries}
+
+The Oracle applications and the new webapp are accessed using different host
+names.  This is not mandatory but a recommended approach for putting several
+applications on one access point.
+
+This \emph{domain name entries} have been configured for the instance:
+
+
+\begin{Verbatim}[label=DNS Zone]
+$ORIGIN agoracon.at.
+$TTL 86400 
+@               86400   IN    SOA       dns1.agoracon.at. admin.agoracon.at. ( 
+                                            2016042013  1d 1h 4w 1h )
+
+...
+
+iamvs                   IN    A         213.47.150.108
+                        IN    TXT       "v=SUB access identity redmine"
+access.iamvs            IN    CNAME     iamvs
+access-admin.iamvs      IN    CNAME     iamvs
+access-api.iamvs        IN    CNAME     iamvs
+access-mobile.iamvs     IN    CNAME     iamvs
+identity.iamvs          IN    CNAME     iamvs
+identity-admin.iamvs    IN    CNAME     iamvs
+identity-api.iamvs      IN    CNAME     iamvs
+dir-admin.iamvs         IN    CNAME     iamvs
+omsas.iamvs             IN    CNAME     iamvs
+redmine.iamvs           IN    CNAME     iamvs
+...
+
+_443._tcp.iamvs.agoracon.at. 86400 IN TLSA (1 0 1 fingerprint...)
+...
+\end{Verbatim}
+
+
+Recommended security mechanisms:
+
+\begin{itemize}
+
+    \item DANE\footnote{RFC 6394: Use Cases and Requirements for DNS-Based 
+	Authentication of Named Entities (DANE)} and TLSA\footnote{RFC 6698: 
+	The DNS-Based Authentication of Named Entities (DANE) Transport 
+	Layer Security (TLS) Protocol: TLSA}
+
+    \item HTTP Strict Transport Security\footnote{RFC 6797: HTTP Strict 
+	Transport Security (HSTS)}
+
+    \item DNSSEC\footnote{Around a docen RFC and growing. A good start point 
+	is RFC 4033: DNS Security Introduction and Requirements}
+
+\end{itemize}
+
+
+\subsection{Load Balancer}
+
+A software replacement for the hardware load balancer used in production is
+configured in the virtual machine.  This enables operations to use the same web
+configuration across all environments.  \verb|HAProxy| can be installed as an
+OS repository package.
+
+The configuration used for this instance:
+
+    \begin{Verbatim}[label=haproxy.conf]
+#  $haproxy: haproxy.conf,v 1.0 2016/04/06 16:25:44 kapfenho Exp $
+#  vi:ft=haproxy:
+#  Part of IAM deployment
+#
+global
+    daemon
+    log         127.0.0.1 local2
+    chroot      /var/lib/haproxy
+    pidfile     /var/run/haproxy.pid
+    maxconn     4000
+    user        haproxy
+    group       haproxy
+    stats socket /var/lib/haproxy/stats
+    # tuning
+    tune.ssl.default-dh-param 2048
+    tune.ssl.cachesize 20000
+    tune.ssl.lifetime 3600
+
+defaults
+    mode      http
+    log       global
+    option    httplog
+    option    dontlognull
+    option    http-server-close
+    option    forwardfor       except 127.0.0.0/8
+    option    redispatch
+    retries   3
+    timeout   http-request    10s
+    timeout   queue           1m
+    timeout   connect         10s
+    timeout   client          1m
+    timeout   server          1m
+    timeout   http-keep-alive 10s
+    timeout   check           10s
+    maxconn                 3000
+
+
+frontend  http_proxy
+    bind *:80
+    redirect scheme https if !{ ssl_fc }
+
+frontend  https_proxy
+    bind *:443 ssl crt /etc/haproxy/x509/iamvs.pem force-tlsv12
+
+    acl host_red hdr_beg(host) -i redmine
+    acl host_oim hdr_beg(host) -i identity-api.
+    acl host_oim hdr_beg(host) -i identity.
+
+    default_backend oam
+    use_backend red if host_red
+    use_backend oim if host_oim
+
+backend oam
+    server oam1 localhost:7777 maxconn 256 check
+
+backend oim
+    server oim1 localhost:7778 maxconn 256 check
+
+backend red
+    server red1 localhost:7779 maxconn 256 check
+\end{Verbatim}
+
+
+\newpage
+
+\section{Integration Tasks}
+
+To integrate a web application into Access Manager the following tasks need to
+be performed:
+
+\begin{itemize}
+
+    \item Place Policy Enforcement Point on request path (infrastructure)
+    \item Configure Application Domain in Access Manager (Access Manager)
+    \item Remove application login and configure SSO user (application)
+    \item Change logout behaviour (application)
+
+\end{itemize}
+
+Changes in Access Manager can be done using the user interface
+\emph{oamconsole}, by importing XML definition files or by using the WLST
+scripting interface.
+
+
+\subsection{Routing via Policy Enforcement Point}
+
+A policy enforcement point (PEP, e.g.\ Webgate) needs to be able to inspect the
+client request.  This can be achived by using an already existing reverse proxy
+with PEP, creating an additional reverse proxy with PEP or deploy Webgate to an
+existing reverse proxy.  There are also some commercial firewall products
+available, that contain compatible PEP (additional fees may apply for add-ons).\@
+
+Additional PEP need to be registered in Access Manager.  The communication
+between Access Manager and the PEP needs to be secured.  This can be done in a
+general way for all PEP (of the same type) or by individual certificates for
+each PEP instance.
+
+
+\subsection{Configure Application Domain in Access Manager}
+
+
+\begin{Verbatim}[label=Register Application Domain]
+<?xml version="1.0" encoding="UTF-8"?>
+<PolicyRegRequest>
+    <serverAddress>http://iamvs.agoracon.at:7001</serverAddress>
+    <hostIdentifier>iamvs.agoracon.at</hostIdentifier>
+    <applicationDomainName>RedmineDomain</applicationDomainName>
+    <protectedAuthnScheme>LDAPScheme</protectedAuthnScheme>
+    <protectedResourcesList>
+        <resource>/account/**</resource>
+        <resource>/news/**</resource>
+        <resource>/issues/**</resource>
+        <resource>/projects/**</resource>
+        <resource>/boards/**</resource>
+        <resource>/journals/**</resource>
+        <resource>/imports/**</resource>
+        <resource>/my/**</resource>
+        <resource>/users/**</resource>
+        <resource>/wiki/**</resource>
+        <resource>/time_entries/**</resource>
+        <resource>/activity/**</resource>
+        <resource>/attachment/**</resource>
+        <resource>/groups/**</resource>
+        <resource>/trackers/**</resource>
+        <resource>/admin/**</resource>
+        <resource>/workflows/**</resource>
+        <resource>/**</resource>
+    </protectedResourcesList>
+    <publicResourcesList>
+        <resource>/public/**</resource>
+    </publicResourcesList>
+    <excludedResourcesList>
+        <resource>/excluded/**</resource>
+    </excludedResourcesList>
+    <hostPortVariationsList>
+        <hostPortVariations>
+            <host>redmine.iamvs.agoracon.at</host>
+            <port>7779</port>
+        </hostPortVariations>
+    </hostPortVariationsList>
+    <rregApplicationDomain>
+    </rregApplicationDomain>
+</PolicyRegRequest>
+\end{Verbatim}
+
+
+\subsection{Login Process Integration}
+
+With the Access Manager integration the application won't need an login screen
+on it's own any more.  Where ever an authentication is necessary, the request
+will be authenticated before it reaches the application.  The application needs
+to take the prinipal set by Access Manager.
+
+In our example HTTP header variable named \verb|HTTP_OAM_REMOTE_USER| is used
+for passing the user identifier.  Using header variables is common method for
+SSO, commercial software products usually support this by configuration.
+
+A customization for a Rails application is done with three additional lines
+(including the comment).
+
+
+\begin{Verbatim}[label=Changes for Login]
+diff --git a/app/controllers/application_controller.rb b/app/controllers/application_controller.rb
+index 092c83a..f8741a6 100644
+--- a/app/controllers/application_controller.rb
++++ b/app/controllers/application_controller.rb
+@@ -103,6 +103,9 @@ class ApplicationController < ActionController::Base
+         user = (User.active.find(session[:user_id]) rescue nil)
+       elsif autologin_user = try_to_autologin
+         user = autologin_user
++      elsif request.env["HTTP_OAM_REMOTE_USER"]
++        # userid passed by oam in http header
++        user = (User.active.find_by_login(request.env["HTTP_OAM_REMOTE_USER"].to_s) rescue nil)
+       elsif params[:format] == 'atom' && params[:key] && request.get? && accept_rss_auth?
+         # RSS key authentication does not start a session
+         user = User.find_by_rss_key(params[:key])
+\end{Verbatim}
+
+
+
+\subsection{Logout Process Integration}
+
+The following lines are taken from a reverse proxy access log and show the SSO
+logout process.  In this session two applications were used, Redmine and the
+Access Manager oamadmin application.
+
+
+\begin{Verbatim}[label=HTTP Calls during Logout]
+     redmine.iamvs.agoracon.at "POST /logout                HTTP/1.1" 301 117
+     redmine.iamvs.agoracon.at "GET  /oamsso/logout.html    HTTP/1.1" 302 261
+      access.iamvs.agoracon.at "GET  /oam/server/logout     HTTP/1.1" 200 3111
+     redmine.iamvs.agoracon.at "GET  /oam_logout_success    HTTP/1.1" 200 114
+access-admin.iamvs.agoracon.at "GET  /oam_logout_success    HTTP/1.1" 200 114
+      access.iamvs.agoracon.at "GET  /oam/pages/logout.jsp? HTTP/1.1" 200 1899
+\end{Verbatim}
+
+
+The POST with resource \verb|/logout| is catched by the agent and redirected to
+the agent default logout page (\verb|/oamsso/logout.html|), followed by a call
+to the access server central logout (\verb|/oam/server/logout|).  The session
+information is invalidated now on server side (Coherence) and on client side
+(Cookies).  A sequence of call-backs to applications involved in this session
+is processed, triggering the application specific logouts
+(\verb|/oam_logout_success|).  Eventually the user gets the configured post
+logout page.
+
+
+\begin{Verbatim}[label=Changes for Logout]
+diff --git a/config/routes.rb b/config/routes.rb
+index 9652496..bdaf675 100644
+--- a/config/routes.rb
++++ b/config/routes.rb
+@@ -19,7 +19,10 @@ Rails.application.routes.draw do
+   root :to => 'welcome#index', :as => 'home'
+
+   match 'login', :to => 'account#login', :as => 'signin', :via => [:get, :post]
+-  match 'logout', :to => 'account#logout', :as => 'signout', :via => [:get, :post]
++  match 'logout' => redirect('/oamsso/logout.html'), as: :signout, via: [:get, :post]
++  match 'oam_logout_success', :to => 'account#logout', :via => [:get, :post]
+
+   match 'account/register', :to => 'account#register', :via => [:get, :post], :as => 'register'
+   match 'account/lost_password', :to => 'account#lost_password', :via => [:get, :post], :as => 'lost_password'
+   match 'account/activate', :to => 'account#activate', :via => :get
+\end{Verbatim}
+
 
 % -------------------------------------------------------------------------
 
@@ -893,8 +1297,7 @@ An authenticated user requests a resource. Webgate has successfully verified the
 request and added the user identifier (\verb|OAM_REMOTE_USER|) and domain
 (\verb|OAM_IDENTITY_DOMAIN|). The request is now passed to the upstream system.
 
-\scriptsize
-\begin{verbatim}
+\begin{Verbatim}
 Hypertext Transfer Protocol
     GET /cs/resources/yui/treeview/assets/treeview-core.css HTTP/1.1
         [Expert Info (Chat/Sequence): GET /cs/resources/yui/treeview/assets/tre
@@ -941,23 +1344,9 @@ Hypertext Transfer Protocol
     [Prev request in frame: 62]
     [Response in frame: 135]
     [Next request in frame: 160]
-\end{verbatim}
-\normalsize
+\end{Verbatim}
 
 \newpage
-
-\begin{figure}
-    \centering
-    \includegraphics[width=1\textwidth]{diag/msgdiag}
-    \caption{Login process with messages}
-\end{figure}
-
-
-\begin{figure}
-    \centering
-    \includegraphics[width=1\textwidth]{diag/seqdiag}
-    \caption{Sequence diagram of SSO login process}
-\end{figure}
 
 
 \bibliographystyle{plain-annote}
