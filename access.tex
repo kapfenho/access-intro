@@ -23,8 +23,8 @@
 
 \title{Introduction to Access Management \\
 using Oracle Access Manager}
-\author{Horst Kapfenberger}
-\date{May 7, 2016}
+\author{Horst Kapfenberger - Agora Con GmbH}
+\date{May 10, 2016}
 
 \begin{document}
 
@@ -910,7 +910,7 @@ integration procedure and Access Manager features.
 
 The virtual machine is running CentOS 6.7 64bit, 32 GB RAM and a total
 disk space of 50 GB have been assigned.  For kernel parameter and system
-configuration please see iam-deployer.
+configuration please see \emph{iam-deployer}.
 
 Following Oracle suite components are setup:
 
@@ -934,7 +934,7 @@ The sample web application consists of these components:
 
 \end{itemize}
 
-HW-Load balancer replacement and TLS termination:
+Hardware load balancer replacement and TLS termination:
 
 \begin{itemize}
 
@@ -1044,7 +1044,7 @@ Recommended security mechanisms:
     \item HTTP Strict Transport Security\footnote{RFC 6797: HTTP Strict 
 	Transport Security (HSTS)}
 
-    \item DNSSEC\footnote{Around a docen RFC and growing. A good start point 
+    \item DNSSEC\footnote{Around a dozen RFC and growing. A good start point 
 	is RFC 4033: DNS Security Introduction and Requirements}
 
 \end{itemize}
@@ -1147,7 +1147,7 @@ scripting interface.
 \subsection{Routing via Policy Enforcement Point}
 
 A policy enforcement point (PEP, e.g.\ Webgate) needs to be able to inspect the
-client request.  This can be achived by using an already existing reverse proxy
+client request.  This can be achieved by using an already existing reverse proxy
 with PEP, creating an additional reverse proxy with PEP or deploy Webgate to an
 existing reverse proxy.  There are also some commercial firewall products
 available, that contain compatible PEP (additional fees may apply for add-ons).\@
@@ -1160,6 +1160,9 @@ each PEP instance.
 
 \subsection{Configure Application Domain in Access Manager}
 
+The new application domain can be configured using the user interface or by
+definition import.  The domain definition contains all resource definitions 
+along with their authentication and authorization policy. 
 
 \begin{Verbatim}[label=Register Application Domain]
 <?xml version="1.0" encoding="UTF-8"?>
@@ -1211,7 +1214,7 @@ each PEP instance.
 With the Access Manager integration the application won't need an login screen
 on it's own any more.  Where ever an authentication is necessary, the request
 will be authenticated before it reaches the application.  The application needs
-to take the prinipal set by Access Manager.
+to take the principal set by Access Manager.
 
 In our example HTTP header variable named \verb|HTTP_OAM_REMOTE_USER| is used
 for passing the user identifier.  Using header variables is common method for
@@ -1257,7 +1260,7 @@ access-admin.iamvs.agoracon.at "GET  /oam_logout_success    HTTP/1.1" 200 114
 \end{Verbatim}
 
 
-The POST with resource \verb|/logout| is catched by the agent and redirected to
+The POST with resource \verb|/logout| is taken by the agent and redirected to
 the agent default logout page (\verb|/oamsso/logout.html|), followed by a call
 to the access server central logout (\verb|/oam/server/logout|).  The session
 information is invalidated now on server side (Coherence) and on client side
@@ -1291,7 +1294,7 @@ index 9652496..bdaf675 100644
 \chapter{Miscellanies}
 
 
-\subsection{Authenticated Request}
+\section{Authenticated Request}
 
 An authenticated user requests a resource. Webgate has successfully verified the
 request and added the user identifier (\verb|OAM_REMOTE_USER|) and domain
@@ -1346,11 +1349,7 @@ Hypertext Transfer Protocol
     [Next request in frame: 160]
 \end{Verbatim}
 
-\newpage
 
-
-\bibliographystyle{plain-annote}
-\bibliography{mybibliography}
 
 \end{document}
 
